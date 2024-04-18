@@ -1,4 +1,5 @@
 #include <bt_leaf_omron/go_to_goal.hpp>
+#include <behaviortree_ros2/plugins.hpp>
 
 BT::PortsList OmronGoToGoal::providedPorts()
 {
@@ -36,3 +37,5 @@ BT::NodeStatus OmronGoToGoal::onFailure(BT::ServiceNodeErrorCode error)
   RCLCPP_ERROR(node_->get_logger(), "Error: %d", error);
   return BT::NodeStatus::FAILURE;
 }
+
+CreateRosNodePlugin(OmronGoToGoal, "OmronGoToGoalSkill");
