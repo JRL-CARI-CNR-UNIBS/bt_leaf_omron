@@ -3,6 +3,7 @@
 
 #include <behaviortree_ros2/bt_service_node.hpp>
 #include <omron_msgs/srv/goto_goal.hpp>
+#include <cnr_param/cnr_param.h>
 
 using GoToGoal = omron_msgs::srv::GotoGoal;
 
@@ -13,7 +14,10 @@ public:
                const BT::NodeConfig& conf,
                const BT::RosNodeParams& params)
     : RosServiceNode<GoToGoal>(name, conf, params)
-  {}
+  {
+    auto param_ns = getInput<std::string>("param_ns");
+    ns_ = "/bt_executer/" + param_ns.value();
+  }
 
   // The specific ports of this Derived class
   // should be merged with the ports of the base class,
@@ -37,6 +41,7 @@ public:
 
 protected:
   std::string goal;
+  std::string ns_;
 };
 
 #endif // GO_TO_GOAL_HPP
