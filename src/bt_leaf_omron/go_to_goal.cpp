@@ -41,7 +41,7 @@ bool OmronGoToGoal::setRequest(Request::SharedPtr& request)
 {
     // Get required parameters
   std::string w;
-  get_param(node_.get(), ns_, "/goal", goal, w);
+  get_param(node_.lock().get(), ns_, "/goal", goal, w);
 
   // getInput("goal", request->goal); // send request to service
   request->goal = goal;
@@ -52,24 +52,24 @@ BT::NodeStatus OmronGoToGoal::onResponseReceived(const Response::SharedPtr& resp
 {
   if(response->result == omron_msgs::srv::GotoGoal::Response::ARRIVED)
   {
-    RCLCPP_DEBUG(node_->get_logger(), "Arrived to goal [%s]", this->goal.c_str());
+    RCLCPP_DEBUG(node_.lock()->get_logger(), "Arrived to goal [%s]", this->goal.c_str());
     return BT::NodeStatus::SUCCESS;
   }
   else if (response->result == omron_msgs::srv::GotoGoal::Response::FAILED)
   {
-    RCLCPP_ERROR(node_->get_logger(), "Error during movement to goal [%s]", this->goal.c_str());
+    RCLCPP_ERROR(node_.lock()->get_logger(), "Error during movement to goal [%s]", this->goal.c_str());
     return BT::NodeStatus::SUCCESS;
   }
   else
   {
-    RCLCPP_ERROR_STREAM(node_->get_logger(), "Unknown Error: " << response->result);
+    RCLCPP_ERROR_STREAM(node_.lock()->get_logger(), "Unknown Error: " << response->result);
     return BT::NodeStatus::SUCCESS;
   }
 }
 
 BT::NodeStatus OmronGoToGoal::onFailure(BT::ServiceNodeErrorCode error)
 {
-  RCLCPP_ERROR(node_->get_logger(), "Error: %d", error);
+  RCLCPP_ERROR(node_.lock()->get_logger(), "Error: %d", error);
   return BT::NodeStatus::SUCCESS;
 }
 
