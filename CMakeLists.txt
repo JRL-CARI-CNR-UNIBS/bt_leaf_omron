@@ -25,6 +25,8 @@ ament_target_dependencies(${PROJECT_NAME}_plugin PUBLIC
   omron_msgs
   cnr_param)
 
+target_compile_definitions(${PROJECT_NAME}_plugin PRIVATE  BT_PLUGIN_EXPORT)
+
 target_include_directories(${PROJECT_NAME}_plugin PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")

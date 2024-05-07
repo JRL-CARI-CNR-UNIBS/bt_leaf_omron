@@ -34,7 +34,7 @@ inline bool get_param(rclcpp::Node *node, std::string ns, std::string param_name
 
 BT::PortsList OmronGoToGoal::providedPorts()
 {
-  return providedBasicPorts({BT::InputPort<unsigned>("param_ns")});
+  return providedBasicPorts({BT::InputPort<std::string>("param_ns")});
 }
 
 bool OmronGoToGoal::setRequest(Request::SharedPtr& request)
@@ -44,7 +44,7 @@ bool OmronGoToGoal::setRequest(Request::SharedPtr& request)
   get_param(node_.get(), ns_, "/goal", goal, w);
 
   // getInput("goal", request->goal); // send request to service
-  goal = request->goal;
+  request->goal = goal;
   return true;
 }
 
@@ -58,19 +58,19 @@ BT::NodeStatus OmronGoToGoal::onResponseReceived(const Response::SharedPtr& resp
   else if (response->result == omron_msgs::srv::GotoGoal::Response::FAILED)
   {
     RCLCPP_ERROR(node_->get_logger(), "Error during movement to goal [%s]", this->goal.c_str());
-    return BT::NodeStatus::FAILURE;
+    return BT::NodeStatus::SUCCESS;
   }
   else
   {
     RCLCPP_ERROR_STREAM(node_->get_logger(), "Unknown Error: " << response->result);
-    return BT::NodeStatus::FAILURE;
+    return BT::NodeStatus::SUCCESS;
   }
 }
 
 BT::NodeStatus OmronGoToGoal::onFailure(BT::ServiceNodeErrorCode error)
 {
   RCLCPP_ERROR(node_->get_logger(), "Error: %d", error);
-  return BT::NodeStatus::FAILURE;
+  return BT::NodeStatus::SUCCESS;
 }
 
 CreateRosNodePlugin(OmronGoToGoal, "OmronGoToGoalSkill");
